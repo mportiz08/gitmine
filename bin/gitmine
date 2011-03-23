@@ -1,0 +1,13 @@
+#!/usr/bin/env ruby
+
+$:.unshift File.join(File.dirname(__FILE__), *%w[.. lib])
+require 'rubygems'
+require 'gitmine'
+
+if ARGV.empty?
+  puts "No atom feed specified!"
+elsif ARGV.size > 1
+  puts "Too many arguments!"
+else
+  Gitmine.transfer ARGV[0]
+end
