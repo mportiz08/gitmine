@@ -11,11 +11,10 @@ module Gitmine
       @issues = parse(File.open(path).read)
       @github = Octokit::Client.new(:login => @config["username"], :token => @config["api_token"])
       @errors = 0
+      @api_calls = 1
     end
     
     def run
-      #puts "transferring labels for #{@config["repo"]}..."
-      #transfer_labels
       puts "transferring issues for #{@config["repo"]}..."
       transfer_issues
       puts "(#{@errors} errors)"
@@ -24,19 +23,13 @@ module Gitmine
     
     private
     
-    def transfer_labels
-      uniq_labels = @issues.map(&:tracker).uniq.map(&:downcase)
-      uniq_labels.each {|l| @github.add_label(@config["repo"], l)}
-    end
-    
     def transfer_issues
-      calls = 1
       @issues.each do |i|
         begin
-          sleep(120) if calls % 30 == 0 # be gentle to avoid rate limiting errors
+          sleep(120) if @api_calls % 30 == 0 # be gentle to avoid rate limiting errors
           post = @github.create_issue(@config["repo"], i.subject, i.description)
           @github.add_label(@config["repo"], i.tracker.downcase, post.number)
-          calls += 1
+          @api_calls += 1
         rescue MultiJson::DecodeError
           @errors += 1
         end
