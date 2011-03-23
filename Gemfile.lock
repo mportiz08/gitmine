@@ -27,4 +27,5 @@ PLATFORMS
 
 DEPENDENCIES
   fastercsv
+  multi_json
   octokit
