@@ -9,7 +9,7 @@ module Gitmine
     end
     
     def run
-      puts @issues.first
+      # TODO
     end
     
     private
@@ -39,7 +39,7 @@ module Gitmine
         issue.description = row[18]
         issues << issue
       end
-      issues
+      issues.drop(1)
     end
   end
 end
