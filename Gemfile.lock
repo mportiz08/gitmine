@@ -12,7 +12,6 @@ GEM
     multi_json (0.0.5)
     multi_xml (0.2.2)
     multipart-post (1.1.0)
-    nokogiri (1.4.4)
     octokit (0.6.0)
       addressable (~> 2.2.4)
       faraday (~> 0.5.4)
@@ -26,5 +25,4 @@ PLATFORMS
   ruby
 
 DEPENDENCIES
-  nokogiri
   octokit

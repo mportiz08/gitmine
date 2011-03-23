@@ -9,5 +9,6 @@ if ARGV.empty?
 elsif ARGV.size > 1
   puts "Too many arguments!"
 else
-  Gitmine.transfer ARGV[0]
+  transfer = Gitmine::Transfer.new(ARGV.first)
+  transfer.run
 end
