@@ -13,13 +13,22 @@ module Gitmine
     
     def run
       puts "transferring labels for #{@config["repo"]}..."
-      # TODO
+      transfer_labels
       puts "transferring issues for #{@config["repo"]}..."
-      # TODO
+      transfer_issues
       puts "...done"
     end
     
     private
+    
+    def transfer_labels
+      uniq_labels = @issues.map(&:tracker).uniq.map(&:downcase)
+      uniq_labels.each {|l| @github.add_label(@config["repo"], l)}
+    end
+    
+    def transfer_issues
+      
+    end
     
     def parse(csv)
       issues = []
