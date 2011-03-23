@@ -1,15 +1,22 @@
 require 'ostruct'
 require 'faster_csv'
+require 'yaml'
 require 'octokit'
 
 module Gitmine  
   class Transfer
     def initialize(path)
+      @config = YAML.load(File.open(File.join(File.dirname(__FILE__), "../", "config", "github.yml")))["github"]
       @issues = parse(File.open(path).read)
+      @github = Octokit::Client.new(:login => @config["username"], :token => @config["api_token"])
     end
     
     def run
+      puts "transferring labels for #{@config["repo"]}..."
       # TODO
+      puts "transferring issues for #{@config["repo"]}..."
+      # TODO
+      puts "...done"
     end
     
     private
