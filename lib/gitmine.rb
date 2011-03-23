@@ -1,6 +1,7 @@
 require 'ostruct'
 require 'faster_csv'
 require 'yaml'
+require 'multi_json'
 require 'octokit'
 
 module Gitmine  
@@ -9,13 +10,15 @@ module Gitmine
       @config = YAML.load(File.open(File.join(File.dirname(__FILE__), "../", "config", "github.yml")))["github"]
       @issues = parse(File.open(path).read)
       @github = Octokit::Client.new(:login => @config["username"], :token => @config["api_token"])
+      @errors = 0
     end
     
     def run
-      puts "transferring labels for #{@config["repo"]}..."
-      transfer_labels
+      #puts "transferring labels for #{@config["repo"]}..."
+      #transfer_labels
       puts "transferring issues for #{@config["repo"]}..."
       transfer_issues
+      puts "(#{@errors} errors)"
       puts "...done"
     end
     
@@ -27,7 +30,17 @@ module Gitmine
     end
     
     def transfer_issues
-      
+      calls = 1
+      @issues.each do |i|
+        begin
+          sleep(120) if calls % 30 == 0 # be gentle to avoid rate limiting errors
+          post = @github.create_issue(@config["repo"], i.subject, i.description)
+          @github.add_label(@config["repo"], i.tracker.downcase, post.number)
+          calls += 1
+        rescue MultiJson::DecodeError
+          @errors += 1
+        end
+      end
     end
     
     def parse(csv)
