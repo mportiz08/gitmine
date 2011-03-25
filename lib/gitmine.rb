@@ -26,7 +26,7 @@ module Gitmine
     def transfer_issues
       @issues.each do |i|
         begin
-          sleep(120) if @api_calls % 30 == 0 # be gentle to avoid rate limiting errors
+          sleep(60) if @api_calls % 59 == 0 # be gentle to avoid rate limiting errors
           post = @github.create_issue(@config["repo"], i.subject, i.description)
           @github.add_label(@config["repo"], i.tracker.downcase, post.number)
           @api_calls += 1
